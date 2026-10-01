@@ -1,0 +1,1 @@
+{"name":"VibeDiet","description":"Photo-based AI meal-logging app for diet-conscious users with tiered nutrition reconciliation, evidence classification, and mass distributions.","requestFramePermissions":["CAMERA"],"majorCapabilities":["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]}

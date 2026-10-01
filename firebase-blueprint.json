@@ -1,0 +1,76 @@
+{
+  "entities": {
+    "User": {
+      "title": "User Profile",
+      "description": "User profile with diet preferences and caloric targets",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "email": { "type": "string" },
+        "displayName": { "type": "string" },
+        "photoURL": { "type": "string" },
+        "isAnonymous": { "type": "boolean" },
+        "targetCalories": { "type": "number" },
+        "targetProtein": { "type": "number" },
+        "targetCarbs": { "type": "number" },
+        "targetFat": { "type": "number" },
+        "goal": { "type": "string" },
+        "createdAt": { "type": "string", "format": "date-time" }
+      },
+      "required": ["id"]
+    },
+    "Meal": {
+      "title": "Meal Record",
+      "description": "Logged meal with component breakdown and nutrition reconciliation",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "userId": { "type": "string" },
+        "name": { "type": "string" },
+        "mealType": { "type": "string", "enum": ["Breakfast", "Lunch", "Dinner", "Snack"] },
+        "timestamp": { "type": "number" },
+        "date": { "type": "string" },
+        "calories": { "type": "number" },
+        "minCalories": { "type": "number" },
+        "maxCalories": { "type": "number" },
+        "protein": { "type": "number" },
+        "carbs": { "type": "number" },
+        "fat": { "type": "number" },
+        "fiber": { "type": "number" },
+        "components": { "type": "array" },
+        "confidence": { "type": "number" },
+        "imageUrl": { "type": "string" },
+        "clarifyingQuestions": { "type": "array" },
+        "atwaterDiagnostic": { "type": "object" },
+        "source": { "type": "string" }
+      },
+      "required": ["id", "userId", "name", "timestamp", "date", "calories"]
+    },
+    "HealthCheck": {
+      "title": "Health Check Test Document",
+      "description": "Trivial read-write document used to verify Firestore connectivity",
+      "type": "object",
+      "properties": {
+        "id": { "type": "string" },
+        "status": { "type": "string" },
+        "timestamp": { "type": "string" },
+        "userId": { "type": "string" }
+      },
+      "required": ["id", "status"]
+    }
+  },
+  "firestore": {
+    "/users/{userId}": {
+      "schema": "User",
+      "description": "User profile document storing personal targets"
+    },
+    "/meals/{mealId}": {
+      "schema": "Meal",
+      "description": "Individual meals logged by users"
+    },
+    "/health_check/{checkId}": {
+      "schema": "HealthCheck",
+      "description": "Connectivity test documents"
+    }
+  }
+}

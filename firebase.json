@@ -1,0 +1,8 @@
+{
+  "firestore": {
+    "databaseId": "ai-studio-dietplanner-40085216-526c-494a-988c-8ebe98e2ec3f",
+    "rules": "firestore.rules",
+    "edition": "ENTERPRISE",
+    "dataAccessMode": "FIRESTORE_NATIVE"
+  }
+}
