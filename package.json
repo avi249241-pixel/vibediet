@@ -11,8 +11,8 @@
     "start": "node server.js",
     "preview": "vite preview",
     "clean": "rm -rf dist server.js",
-    "lint": "tsc --noEmit",
-    "test": "npx tsx --test tests/diet.test.ts tests/atwaterValidation.test.ts tests/macroReconciliation.test.ts"
+    "test": "npx tsx --test tests/diet.test.ts tests/atwaterValidation.test.ts tests/macroReconciliation.test.ts",
+    "test:e2e": "playwright test"
   },
   "dependencies": {
     "@google/genai": "^2.4.0",
@@ -28,13 +28,14 @@
     "vite": "^8.3.0"
   },
   "devDependencies": {
+    "@playwright/test": "^1.63.0",
+    "@types/express": "^4.17.21",
     "@types/node": "^22.14.0",
     "@types/react": "^19.3.0",
     "@types/react-dom": "^19.3.0",
     "autoprefixer": "^10.4.21",
     "tailwindcss": "^4.3.3",
     "tsx": "^4.21.0",
-    "typescript": "^7.0.2",
-    "@types/express": "^4.17.21"
+    "typescript": "^7.0.2"
   }
 }
