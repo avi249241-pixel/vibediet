@@ -7,22 +7,24 @@
 }
 
 :root {
-  --bg-surface: #fbfcfd;
-  --bg-card: rgba(255, 255, 255, 0.88);
-  --border-card: rgba(235, 238, 242, 0.9);
-  --shadow-ambient: 0 12px 36px -8px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
-  --shadow-hover: 0 20px 48px -10px rgba(15, 23, 42, 0.08), 0 4px 10px -2px rgba(15, 23, 42, 0.03);
+  --bg-surface: #f8fafc;
+  --bg-card: rgba(255, 255, 255, 0.82);
+  --border-card: rgba(255, 255, 255, 0.95);
+  --shadow-ambient: 0 16px 40px -12px rgba(15, 23, 42, 0.07), 0 0 0 1px rgba(226, 232, 240, 0.5), inset 0 1.5px 0 rgba(255, 255, 255, 0.9);
+  --shadow-hover: 0 24px 50px -12px rgba(16, 185, 129, 0.14), 0 0 0 1px rgba(16, 185, 129, 0.35), inset 0 1.5px 0 rgba(255, 255, 255, 1);
 }
 
 body {
   font-family: var(--font-sans);
   background-color: var(--bg-surface);
   background-image: 
-    radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.06) 0px, transparent 45%),
-    radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.05) 0px, transparent 40%),
-    radial-gradient(at 50% 100%, rgba(245, 158, 11, 0.04) 0px, transparent 45%);
+    radial-gradient(circle 900px at 5% 0%, rgba(16, 185, 129, 0.14) 0%, transparent 60%),
+    radial-gradient(circle 950px at 95% 5%, rgba(99, 102, 241, 0.13) 0%, transparent 60%),
+    radial-gradient(circle 800px at 50% 50%, rgba(245, 158, 11, 0.08) 0%, transparent 60%),
+    radial-gradient(circle 1000px at 80% 90%, rgba(244, 63, 94, 0.07) 0%, transparent 60%),
+    radial-gradient(circle 700px at 20% 95%, rgba(14, 165, 233, 0.09) 0%, transparent 60%);
   background-attachment: fixed;
-  color: #1c1917; /* stone-900 */
+  color: #0f172a;
   overflow-x: hidden;
   -webkit-font-smoothing: antialiased;
 }
@@ -30,30 +32,33 @@ body {
 /* Glassmorphic luxury cards */
 .glass-card {
   background: var(--bg-card);
-  backdrop-filter: blur(16px);
-  -webkit-backdrop-filter: blur(16px);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
   border: 1px solid var(--border-card);
   box-shadow: var(--shadow-ambient);
-  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+  transition: all 0.3s cubic-bezier(0.16, 1, 0.3, 1);
 }
 
 .glass-card:hover {
   box-shadow: var(--shadow-hover);
-  border-color: rgba(210, 215, 222, 0.9);
 }
 
 .glass-dock {
-  background: rgba(255, 255, 255, 0.85);
-  backdrop-filter: blur(24px);
-  -webkit-backdrop-filter: blur(24px);
-  border: 1px solid rgba(255, 255, 255, 0.9);
-  box-shadow: 0 20px 50px -10px rgba(15, 23, 42, 0.12), 0 0 1px 1px rgba(255, 255, 255, 0.8) inset;
+  background: rgba(255, 255, 255, 0.88);
+  backdrop-filter: blur(32px) saturate(200%);
+  -webkit-backdrop-filter: blur(32px) saturate(200%);
+  border: 1.5px solid rgba(255, 255, 255, 0.95);
+  box-shadow: 
+    0 24px 60px -15px rgba(15, 23, 42, 0.16),
+    0 0 0 1px rgba(226, 232, 240, 0.6),
+    0 0 35px -5px rgba(16, 185, 129, 0.2);
 }
 
 .glass-pill {
-  background: rgba(244, 246, 248, 0.8);
-  backdrop-filter: blur(8px);
-  border: 1px solid rgba(226, 232, 240, 0.8);
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(12px);
+  border: 1px solid rgba(226, 232, 240, 0.9);
+  box-shadow: 0 2px 8px -1px rgba(15, 23, 42, 0.04);
 }
 
 /* Macro Gradient Badges & Bars */
@@ -73,6 +78,23 @@ body {
   background: linear-gradient(135deg, #f43f5e 0%, #fb7185 100%);
 }
 
+/* Glow filters for concentric rings and indicators */
+.glow-emerald {
+  filter: drop-shadow(0 0 8px rgba(16, 185, 129, 0.45));
+}
+
+.glow-violet {
+  filter: drop-shadow(0 0 8px rgba(99, 102, 241, 0.45));
+}
+
+.glow-amber {
+  filter: drop-shadow(0 0 8px rgba(245, 158, 11, 0.45));
+}
+
+.glow-rose {
+  filter: drop-shadow(0 0 8px rgba(244, 63, 94, 0.45));
+}
+
 /* Custom quiet scrollbar */
 ::-webkit-scrollbar {
   width: 6px;
@@ -82,18 +104,19 @@ body {
   background: transparent;
 }
 ::-webkit-scrollbar-thumb {
-  background: #d6d8db;
+  background: #cbd5e1;
   border-radius: 9999px;
 }
 ::-webkit-scrollbar-thumb:hover {
-  background: #b0b4b8;
+  background: #94a3b8;
 }
 
 @keyframes pulse-subtle {
   0%, 100% { opacity: 1; transform: scale(1); }
-  50% { opacity: 0.85; transform: scale(1.02); }
+  50% { opacity: 0.88; transform: scale(1.025); }
 }
 
 .animate-pulse-subtle {
   animation: pulse-subtle 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
 }
+

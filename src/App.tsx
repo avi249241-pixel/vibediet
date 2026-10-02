@@ -17,7 +17,7 @@ function MainAppShell() {
     <div className="min-h-screen text-stone-900 flex flex-col font-sans selection:bg-emerald-200 selection:text-emerald-950 pb-20">
       <Navigation activeTab={activeTab} setActiveTab={setActiveTab} />
 
-      <main className="flex-1 max-w-6xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-28 md:pb-20">
+      <main className="flex-1 max-w-4xl w-full mx-auto px-4 sm:px-6 py-6 sm:py-8 pb-32 md:pb-24">
         <AnimatePresence mode="wait">
           {activeTab === 'log' && (
             <motion.div

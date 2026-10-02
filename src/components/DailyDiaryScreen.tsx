@@ -114,13 +114,46 @@ export const DailyDiaryScreen: React.FC<DailyDiaryScreenProps> = ({
       >
         <div className="flex flex-col lg:flex-row items-center justify-between gap-8">
           {/* Left: Interactive Concentric Rings Dial */}
-          <div className="relative flex items-center justify-center shrink-0 w-64 h-64 sm:w-72 sm:h-72">
+          <div className="relative flex items-center justify-center shrink-0 w-68 h-68 sm:w-76 sm:h-76">
             <svg className="w-full h-full -rotate-90 transform" viewBox="0 0 200 200">
-              {/* Background Tracks */}
-              <circle cx="100" cy="100" r="82" fill="none" stroke="#f1f5f9" strokeWidth="12" />
-              <circle cx="100" cy="100" r="66" fill="none" stroke="#f1f5f9" strokeWidth="10" />
-              <circle cx="100" cy="100" r="52" fill="none" stroke="#f1f5f9" strokeWidth="8" />
-              <circle cx="100" cy="100" r="40" fill="none" stroke="#f1f5f9" strokeWidth="6" />
+              {/* Filter definitions for neon glowing progress */}
+              <defs>
+                <filter id="glowEmerald" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="0" stdDeviation="2.5" floodColor="#10b981" floodOpacity="0.45" />
+                </filter>
+                <filter id="glowViolet" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="0" stdDeviation="2.5" floodColor="#6366f1" floodOpacity="0.45" />
+                </filter>
+                <filter id="glowAmber" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="0" stdDeviation="2.5" floodColor="#f59e0b" floodOpacity="0.45" />
+                </filter>
+                <filter id="glowRose" x="-20%" y="-20%" width="140%" height="140%">
+                  <feDropShadow dx="0" dy="0" stdDeviation="2.5" floodColor="#f43f5e" floodOpacity="0.45" />
+                </filter>
+
+                <linearGradient id="calorieGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#10b981" />
+                  <stop offset="100%" stopColor="#059669" />
+                </linearGradient>
+                <linearGradient id="proteinGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#818cf8" />
+                  <stop offset="100%" stopColor="#6366f1" />
+                </linearGradient>
+                <linearGradient id="carbsGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#fbbf24" />
+                  <stop offset="100%" stopColor="#f59e0b" />
+                </linearGradient>
+                <linearGradient id="fatGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                  <stop offset="0%" stopColor="#fb7185" />
+                  <stop offset="100%" stopColor="#f43f5e" />
+                </linearGradient>
+              </defs>
+
+              {/* Background Color-Coded Ambient Tracks (Vibrant even at 0%) */}
+              <circle cx="100" cy="100" r="82" fill="none" stroke="rgba(16, 185, 129, 0.16)" strokeWidth="12" />
+              <circle cx="100" cy="100" r="66" fill="none" stroke="rgba(99, 102, 241, 0.16)" strokeWidth="10" />
+              <circle cx="100" cy="100" r="52" fill="none" stroke="rgba(245, 158, 11, 0.18)" strokeWidth="8" />
+              <circle cx="100" cy="100" r="40" fill="none" stroke="rgba(244, 63, 94, 0.18)" strokeWidth="6" />
 
               {/* Progress Ring 1: Calories (Outer Emerald) */}
               <motion.circle
@@ -131,10 +164,11 @@ export const DailyDiaryScreen: React.FC<DailyDiaryScreenProps> = ({
                 stroke="url(#calorieGradient)"
                 strokeWidth="12"
                 strokeLinecap="round"
+                filter="url(#glowEmerald)"
                 strokeDasharray={2 * Math.PI * 82}
                 initial={{ strokeDashoffset: 2 * Math.PI * 82 }}
-                animate={{ strokeDashoffset: (2 * Math.PI * 82) * (1 - calProgress / 100) }}
-                transition={{ duration: 1.2, ease: [0.16, 1, 0.3, 1] }}
+                animate={{ strokeDashoffset: (2 * Math.PI * 82) * (1 - Math.max(0.01, calProgress) / 100) }}
+                transition={{ duration: 1.4, ease: [0.16, 1, 0.3, 1] }}
               />
 
               {/* Progress Ring 2: Protein (Violet) */}
@@ -146,10 +180,11 @@ export const DailyDiaryScreen: React.FC<DailyDiaryScreenProps> = ({
                 stroke="url(#proteinGradient)"
                 strokeWidth="10"
                 strokeLinecap="round"
+                filter="url(#glowViolet)"
                 strokeDasharray={2 * Math.PI * 66}
                 initial={{ strokeDashoffset: 2 * Math.PI * 66 }}
-                animate={{ strokeDashoffset: (2 * Math.PI * 66) * (1 - proteinProgress / 100) }}
-                transition={{ duration: 1.2, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
+                animate={{ strokeDashoffset: (2 * Math.PI * 66) * (1 - Math.max(0.01, proteinProgress) / 100) }}
+                transition={{ duration: 1.4, delay: 0.1, ease: [0.16, 1, 0.3, 1] }}
               />
 
               {/* Progress Ring 3: Carbs (Amber) */}
@@ -161,10 +196,11 @@ export const DailyDiaryScreen: React.FC<DailyDiaryScreenProps> = ({
                 stroke="url(#carbsGradient)"
                 strokeWidth="8"
                 strokeLinecap="round"
+                filter="url(#glowAmber)"
                 strokeDasharray={2 * Math.PI * 52}
                 initial={{ strokeDashoffset: 2 * Math.PI * 52 }}
-                animate={{ strokeDashoffset: (2 * Math.PI * 52) * (1 - carbsProgress / 100) }}
-                transition={{ duration: 1.2, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
+                animate={{ strokeDashoffset: (2 * Math.PI * 52) * (1 - Math.max(0.01, carbsProgress) / 100) }}
+                transition={{ duration: 1.4, delay: 0.2, ease: [0.16, 1, 0.3, 1] }}
               />
 
               {/* Progress Ring 4: Fat (Rose) */}
@@ -176,47 +212,30 @@ export const DailyDiaryScreen: React.FC<DailyDiaryScreenProps> = ({
                 stroke="url(#fatGradient)"
                 strokeWidth="6"
                 strokeLinecap="round"
+                filter="url(#glowRose)"
                 strokeDasharray={2 * Math.PI * 40}
                 initial={{ strokeDashoffset: 2 * Math.PI * 40 }}
-                animate={{ strokeDashoffset: (2 * Math.PI * 40) * (1 - fatProgress / 100) }}
-                transition={{ duration: 1.2, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
+                animate={{ strokeDashoffset: (2 * Math.PI * 40) * (1 - Math.max(0.01, fatProgress) / 100) }}
+                transition={{ duration: 1.4, delay: 0.3, ease: [0.16, 1, 0.3, 1] }}
               />
-
-              {/* Gradients */}
-              <defs>
-                <linearGradient id="calorieGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#10b981" />
-                  <stop offset="100%" stopColor="#14b8a6" />
-                </linearGradient>
-                <linearGradient id="proteinGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#6366f1" />
-                  <stop offset="100%" stopColor="#8b5cf6" />
-                </linearGradient>
-                <linearGradient id="carbsGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#f59e0b" />
-                  <stop offset="100%" stopColor="#f97316" />
-                </linearGradient>
-                <linearGradient id="fatGradient" x1="0%" y1="0%" x2="100%" y2="100%">
-                  <stop offset="0%" stopColor="#f43f5e" />
-                  <stop offset="100%" stopColor="#fb7185" />
-                </linearGradient>
-              </defs>
             </svg>
 
-            {/* Dial Center Text */}
+            {/* Dial Center Text with Glass Halo */}
             <div className="absolute inset-0 flex flex-col items-center justify-center text-center select-none pointer-events-none">
-              <span className="text-[10px] font-mono uppercase tracking-wider text-stone-400 font-bold">
+              <span className="text-[10px] font-mono uppercase tracking-wider text-emerald-700/80 font-bold flex items-center gap-1">
+                <Flame className="w-3 h-3 text-emerald-500 fill-emerald-500" />
                 Remaining
               </span>
               <motion.span
                 key={remainingCalories}
                 initial={{ scale: 0.85, opacity: 0 }}
                 animate={{ scale: 1, opacity: 1 }}
-                className="text-3xl sm:text-4xl font-extrabold font-mono text-stone-900 tracking-tight"
+                transition={{ type: 'spring', stiffness: 450, damping: 25 }}
+                className="text-3xl sm:text-4xl font-extrabold font-mono text-stone-900 tracking-tight my-0.5"
               >
                 {remainingCalories}
               </motion.span>
-              <span className="text-[11px] font-mono text-stone-500 font-medium">
+              <span className="text-[11px] font-mono text-stone-500 font-semibold px-2 py-0.5 rounded-full bg-stone-100/90 border border-stone-200/60">
                 kcal today
               </span>
             </div>
@@ -226,120 +245,124 @@ export const DailyDiaryScreen: React.FC<DailyDiaryScreenProps> = ({
           <div className="flex-1 w-full grid grid-cols-2 sm:grid-cols-2 gap-3.5">
             {/* Calories Card */}
             <motion.div
-              whileHover={{ y: -3, scale: 1.01 }}
+              whileHover={{ y: -4, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-              className="p-4 rounded-2xl bg-gradient-to-br from-emerald-500/8 to-teal-500/5 border border-emerald-500/15 flex flex-col justify-between"
+              className="p-4.5 rounded-2xl bg-white/80 backdrop-blur-xl border border-emerald-500/25 shadow-[0_12px_28px_-6px_rgba(16,185,129,0.12)] flex flex-col justify-between hover:border-emerald-500/50 transition-colors"
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-emerald-900 tracking-tight flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-xs" />
+                <span className="text-xs font-bold text-emerald-950 tracking-tight flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]" />
                   Energy Target
                 </span>
-                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-100 text-emerald-800">
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-emerald-50 text-emerald-700 border border-emerald-200/80">
                   {calProgress}%
                 </span>
               </div>
               <div className="my-2.5">
-                <div className="text-xl sm:text-2xl font-extrabold font-mono text-stone-900">
-                  {totalCalories} <span className="text-xs font-normal text-stone-500">/ {dayTargetCalories} kcal</span>
+                <div className="text-xl sm:text-2xl font-extrabold font-mono text-stone-900 tracking-tight">
+                  {totalCalories} <span className="text-xs font-semibold text-stone-400">/ {dayTargetCalories} kcal</span>
                 </div>
               </div>
-              <div className="w-full bg-stone-100 h-2 rounded-full overflow-hidden">
+              <div className="w-full bg-emerald-500/15 h-2.5 rounded-full overflow-hidden p-0.5">
                 <motion.div
-                  className="h-full gradient-calorie rounded-full"
+                  className="h-full gradient-calorie rounded-full shadow-[0_0_8px_rgba(16,185,129,0.5)]"
                   initial={{ width: 0 }}
-                  animate={{ width: `${calProgress}%` }}
-                  transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                  animate={{ width: `${Math.max(2, calProgress)}%` }}
+                  transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
                 />
               </div>
             </motion.div>
 
             {/* Protein Card */}
             <motion.div
-              whileHover={{ y: -3, scale: 1.01 }}
+              whileHover={{ y: -4, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-              className="p-4 rounded-2xl bg-gradient-to-br from-indigo-500/8 to-violet-500/5 border border-indigo-500/15 flex flex-col justify-between"
+              className="p-4.5 rounded-2xl bg-white/80 backdrop-blur-xl border border-indigo-500/25 shadow-[0_12px_28px_-6px_rgba(99,102,241,0.12)] flex flex-col justify-between hover:border-indigo-500/50 transition-colors"
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-indigo-900 tracking-tight flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-xs" />
+                <span className="text-xs font-bold text-indigo-950 tracking-tight flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-indigo-500 shadow-[0_0_8px_rgba(99,102,241,0.6)]" />
                   Protein Target
                 </span>
-                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-indigo-100 text-indigo-800">
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-indigo-50 text-indigo-700 border border-indigo-200/80">
                   {proteinProgress}%
                 </span>
               </div>
               <div className="my-2.5">
-                <div className="text-xl sm:text-2xl font-extrabold font-mono text-stone-900">
-                  {totalProtein}g <span className="text-xs font-normal text-stone-500">/ {userProfile.targetProtein}g</span>
+                <div className="text-xl sm:text-2xl font-extrabold font-mono text-stone-900 tracking-tight">
+                  {totalProtein}g <span className="text-xs font-semibold text-stone-400">/ {userProfile.targetProtein}g</span>
                 </div>
               </div>
-              <div className="w-full bg-stone-100 h-2 rounded-full overflow-hidden">
+              <div className="w-full bg-indigo-500/15 h-2.5 rounded-full overflow-hidden p-0.5">
                 <motion.div
-                  className="h-full gradient-protein rounded-full"
+                  className="h-full gradient-protein rounded-full shadow-[0_0_8px_rgba(99,102,241,0.5)]"
                   initial={{ width: 0 }}
-                  animate={{ width: `${proteinProgress}%` }}
-                  transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                  animate={{ width: `${Math.max(2, proteinProgress)}%` }}
+                  transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
                 />
               </div>
             </motion.div>
 
             {/* Carbs Card */}
             <motion.div
-              whileHover={{ y: -3, scale: 1.01 }}
+              whileHover={{ y: -4, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-              className="p-4 rounded-2xl bg-gradient-to-br from-amber-500/8 to-orange-500/5 border border-amber-500/15 flex flex-col justify-between"
+              className="p-4.5 rounded-2xl bg-white/80 backdrop-blur-xl border border-amber-500/25 shadow-[0_12px_28px_-6px_rgba(245,158,11,0.12)] flex flex-col justify-between hover:border-amber-500/50 transition-colors"
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-amber-900 tracking-tight flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-xs" />
+                <span className="text-xs font-bold text-amber-950 tracking-tight flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]" />
                   Carbohydrates
                 </span>
-                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-100 text-amber-800">
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-amber-50 text-amber-700 border border-amber-200/80">
                   {carbsProgress}%
                 </span>
               </div>
               <div className="my-2.5">
-                <div className="text-xl sm:text-2xl font-extrabold font-mono text-stone-900">
-                  {totalCarbs}g <span className="text-xs font-normal text-stone-500">/ {userProfile.targetCarbs}g</span>
+                <div className="text-xl sm:text-2xl font-extrabold font-mono text-stone-900 tracking-tight">
+                  {totalCarbs}g <span className="text-xs font-semibold text-stone-400">/ {userProfile.targetCarbs}g</span>
                 </div>
               </div>
-              <div className="w-full bg-stone-100 h-2 rounded-full overflow-hidden">
+              <div className="w-full bg-amber-500/15 h-2.5 rounded-full overflow-hidden p-0.5">
                 <motion.div
-                  className="h-full gradient-carbs rounded-full"
+                  className="h-full gradient-carbs rounded-full shadow-[0_0_8px_rgba(245,158,11,0.5)]"
                   initial={{ width: 0 }}
-                  animate={{ width: `${carbsProgress}%` }}
-                  transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                  animate={{ width: `${Math.max(2, carbsProgress)}%` }}
+                  transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
                 />
               </div>
             </motion.div>
 
             {/* Fat Card */}
             <motion.div
-              whileHover={{ y: -3, scale: 1.01 }}
+              whileHover={{ y: -4, scale: 1.02 }}
+              whileTap={{ scale: 0.98 }}
               transition={{ type: 'spring', stiffness: 400, damping: 25 }}
-              className="p-4 rounded-2xl bg-gradient-to-br from-rose-500/8 to-pink-500/5 border border-rose-500/15 flex flex-col justify-between"
+              className="p-4.5 rounded-2xl bg-white/80 backdrop-blur-xl border border-rose-500/25 shadow-[0_12px_28px_-6px_rgba(244,63,94,0.12)] flex flex-col justify-between hover:border-rose-500/50 transition-colors"
             >
               <div className="flex items-center justify-between">
-                <span className="text-xs font-bold text-rose-900 tracking-tight flex items-center gap-1.5">
-                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-xs" />
+                <span className="text-xs font-bold text-rose-950 tracking-tight flex items-center gap-1.5">
+                  <span className="w-2.5 h-2.5 rounded-full bg-rose-500 shadow-[0_0_8px_rgba(244,63,94,0.6)]" />
                   Dietary Fat
                 </span>
-                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-rose-100 text-rose-800">
+                <span className="text-[10px] font-mono font-bold px-2 py-0.5 rounded-full bg-rose-50 text-rose-700 border border-rose-200/80">
                   {fatProgress}%
                 </span>
               </div>
               <div className="my-2.5">
-                <div className="text-xl sm:text-2xl font-extrabold font-mono text-stone-900">
-                  {totalFat}g <span className="text-xs font-normal text-stone-500">/ {userProfile.targetFat}g</span>
+                <div className="text-xl sm:text-2xl font-extrabold font-mono text-stone-900 tracking-tight">
+                  {totalFat}g <span className="text-xs font-semibold text-stone-400">/ {userProfile.targetFat}g</span>
                 </div>
               </div>
-              <div className="w-full bg-stone-100 h-2 rounded-full overflow-hidden">
+              <div className="w-full bg-rose-500/15 h-2.5 rounded-full overflow-hidden p-0.5">
                 <motion.div
-                  className="h-full gradient-fat rounded-full"
+                  className="h-full gradient-fat rounded-full shadow-[0_0_8px_rgba(244,63,94,0.5)]"
                   initial={{ width: 0 }}
-                  animate={{ width: `${fatProgress}%` }}
-                  transition={{ duration: 0.9, ease: [0.16, 1, 0.3, 1] }}
+                  animate={{ width: `${Math.max(2, fatProgress)}%` }}
+                  transition={{ duration: 1.0, ease: [0.16, 1, 0.3, 1] }}
                 />
               </div>
             </motion.div>

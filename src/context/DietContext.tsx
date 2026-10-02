@@ -101,12 +101,63 @@ function generateSeedWeights(): WeightEntry[] {
   });
 }
 
+function generateSeedMeals(): FoodItem[] {
+  const today = getTodayDateString();
+  const breakfastTemplate = SAMPLE_MEAL_TEMPLATES[1]; // Avocado Sourdough & Poached Eggs
+  const lunchTemplate = SAMPLE_MEAL_TEMPLATES[3]; // Lean Grilled Chicken & Brown Rice Bowl
+
+  const breakfastComponents = breakfastTemplate.components
+    .map(c => buildComponentFromUsda(c.itemRefId, c.grams, c.evidenceClass, c.notes))
+    .filter(Boolean) as ComponentFoodItem[];
+
+  const lunchComponents = lunchTemplate.components
+    .map(c => buildComponentFromUsda(c.itemRefId, c.grams, c.evidenceClass, c.notes))
+    .filter(Boolean) as ComponentFoodItem[];
+
+  const m1 = createCalibratedFoodItem(
+    breakfastTemplate.name,
+    breakfastTemplate.mealType,
+    breakfastComponents,
+    breakfastTemplate.imageUrl
+  );
+  m1.date = today;
+  m1.timestamp = Date.now() - 4 * 3600 * 1000;
+
+  const m2 = createCalibratedFoodItem(
+    lunchTemplate.name,
+    lunchTemplate.mealType,
+    lunchComponents,
+    lunchTemplate.imageUrl
+  );
+  m2.date = today;
+  m2.timestamp = Date.now() - 1 * 3600 * 1000;
+
+  return [m1, m2];
+}
+
 const DietContext = createContext<DietContextType | undefined>(undefined);
 
 export const DietProvider: React.FC<{ children: ReactNode }> = ({ children }) => {
   const { user } = useAuth();
   const [selectedDate, setSelectedDate] = useState<string>(getTodayDateString());
-  const [meals, setMeals] = useState<FoodItem[]>([]);
+  const [meals, setMeals] = useState<FoodItem[]>(() => {
+    try {
+      const localMeals = localStorage.getItem('vibediet_meals');
+      if (localMeals) {
+        const parsed = JSON.parse(localMeals);
+        if (Array.isArray(parsed) && parsed.length > 0) {
+          const today = getTodayDateString();
+          const hasTodayMeal = parsed.some((m: FoodItem) => m.date === today);
+          if (hasTodayMeal) {
+            return parsed;
+          } else {
+            return [...generateSeedMeals(), ...parsed];
+          }
+        }
+      }
+    } catch (e) {}
+    return generateSeedMeals();
+  });
   const [userProfile, setUserProfile] = useState<UserProfile>(DEFAULT_PROFILE);
   const [foodMemories, setFoodMemories] = useState<PersonalFoodMemory[]>([]);
   const [weightEntries, setWeightEntries] = useState<WeightEntry[]>(() => {
@@ -134,18 +185,17 @@ export const DietProvider: React.FC<{ children: ReactNode }> = ({ children }) =>
 
       const localMemories = localStorage.getItem('vibediet_memories');
       if (localMemories) setFoodMemories(JSON.parse(localMemories));
-
-      const localMeals = localStorage.getItem('vibediet_meals');
-      if (localMeals) {
-        const parsed = JSON.parse(localMeals);
-        if (Array.isArray(parsed) && parsed.length > 0) {
-          setMeals(parsed);
-        }
-      }
     } catch (e) {
       console.error('Error reading localStorage cache:', e);
     }
   }, []);
+
+  // Save meals locally
+  useEffect(() => {
+    try {
+      localStorage.setItem('vibediet_meals', JSON.stringify(meals));
+    } catch (e) {}
+  }, [meals]);
 
   // Save weights locally
   useEffect(() => {
