@@ -1,5 +1,6 @@
 import React, { useState } from 'react';
 import { PenTool, Plus, Trash2, CheckCircle2, Search, ArrowRight, ShieldCheck } from 'lucide-react';
+import { motion } from 'motion/react';
 import { ComponentFoodItem, EvidenceClass, FoodItem, MealType } from '../types/diet';
 import { useDiet, getTodayDateString } from '../context/DietContext';
 import { USDA_REFERENCE_DATABASE, searchUsdaFoods, buildComponentFromUsda } from '../data/usdaDatabase';
@@ -155,10 +156,17 @@ export const ManualEntryScreen: React.FC<ManualEntryScreenProps> = ({ onSaved })
 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
-      <section className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200/80 shadow-sm space-y-6">
+      <motion.section
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 350, damping: 25 }}
+        className="glass-card rounded-3xl p-6 sm:p-8 space-y-6"
+      >
         <div>
-          <h2 className="text-xl font-bold font-display text-stone-900 tracking-tight flex items-center gap-2">
-            <PenTool className="w-5 h-5 text-emerald-600" />
+          <h2 className="text-xl font-extrabold font-display text-stone-900 tracking-tight flex items-center gap-2.5">
+            <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+              <PenTool className="w-4.5 h-4.5" />
+            </div>
             Manual Meal Entry
           </h2>
           <p className="text-xs text-stone-400 mt-1">
@@ -169,7 +177,7 @@ export const ManualEntryScreen: React.FC<ManualEntryScreenProps> = ({ onSaved })
         {/* Inputs */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4 pb-4 border-b border-stone-100">
           <div>
-            <label htmlFor="manual-meal-name" className="text-[11px] font-mono font-semibold text-stone-400 uppercase tracking-wider block mb-1">
+            <label htmlFor="manual-meal-name" className="text-[11px] font-mono font-bold text-stone-400 uppercase tracking-wider block mb-1">
               Meal Name
             </label>
             <input
@@ -179,27 +187,28 @@ export const ManualEntryScreen: React.FC<ManualEntryScreenProps> = ({ onSaved })
               type="text"
               value={mealName}
               onChange={(e) => setMealName(e.target.value)}
-              className="w-full text-base font-bold text-stone-900 bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2 focus:outline-none focus:border-emerald-500"
+              className="w-full text-base font-bold text-stone-900 bg-stone-50/80 border border-stone-200/90 rounded-2xl px-4 py-2 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all"
             />
           </div>
 
           <div>
-            <label className="text-[11px] font-mono font-semibold text-stone-400 uppercase tracking-wider block mb-1">
+            <label className="text-[11px] font-mono font-bold text-stone-400 uppercase tracking-wider block mb-1">
               Meal Type
             </label>
-            <div className="flex items-center gap-1.5 pt-0.5">
+            <div className="flex items-center gap-1 bg-stone-100/70 p-1 rounded-xl">
               {(['Breakfast', 'Lunch', 'Dinner', 'Snack'] as MealType[]).map((t) => (
-                <button
+                <motion.button
                   key={t}
+                  whileTap={{ scale: 0.95 }}
                   onClick={() => setMealType(t)}
-                  className={`px-3 py-1.5 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
+                  className={`flex-1 py-1.5 rounded-lg text-xs font-bold transition-all cursor-pointer ${
                     mealType === t
-                      ? 'bg-emerald-600 text-white shadow-sm'
-                      : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
+                      ? 'bg-white text-emerald-800 shadow-xs'
+                      : 'text-stone-600 hover:text-stone-900'
                   }`}
                 >
                   {t}
-                </button>
+                </motion.button>
               ))}
             </div>
           </div>
@@ -214,7 +223,7 @@ export const ManualEntryScreen: React.FC<ManualEntryScreenProps> = ({ onSaved })
             </label>
             <button
               onClick={() => setIsCustomOpen(!isCustomOpen)}
-              className="text-xs font-semibold text-emerald-700 hover:text-emerald-800 cursor-pointer"
+              className="text-xs font-bold text-emerald-700 hover:text-emerald-800 cursor-pointer transition-colors"
             >
               {isCustomOpen ? 'Switch to USDA Search' : '+ Add Custom Ingredient'}
             </button>
@@ -230,39 +239,45 @@ export const ManualEntryScreen: React.FC<ManualEntryScreenProps> = ({ onSaved })
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
                 placeholder="Search USDA database (e.g. eggs, steak, sweet potato, oats, banana)..."
-                className="w-full bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-2 text-xs text-stone-900 focus:outline-none focus:border-emerald-500"
+                className="w-full bg-stone-50/80 border border-stone-200/90 rounded-xl px-3.5 py-2 text-xs text-stone-900 focus:outline-none focus:border-emerald-500 font-medium"
               />
 
               {searchQuery && (
-                <div className="max-h-48 overflow-y-auto space-y-1.5 p-2 bg-stone-50 rounded-2xl border border-stone-200 scrollbar-thin">
+                <div className="max-h-48 overflow-y-auto space-y-1.5 p-2 bg-stone-50/80 rounded-2xl border border-stone-200/80 scrollbar-thin">
                   {searchResults.map((item) => (
                     <div
                       key={item.id}
-                      className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-stone-200 text-xs"
+                      className="flex items-center justify-between p-2.5 rounded-xl bg-white border border-stone-200/90 text-xs hover:border-emerald-200 transition-colors"
                     >
                       <div>
-                        <span className="font-bold text-stone-800">{item.name}</span>
+                        <span className="font-bold text-stone-850">{item.name}</span>
                         <span className="text-[11px] text-stone-400 block font-mono">
                           {item.caloriesPer100g} kcal/100g · P:{item.proteinPer100g}g C:{item.carbsPer100g}g F:{item.fatPer100g}g
                         </span>
                       </div>
-                      <button
+                      <motion.button
+                        whileHover={{ scale: 1.04 }}
+                        whileTap={{ scale: 0.95 }}
                         onClick={() => handleAddFromUsda(item.id)}
-                        className="px-3 py-1 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer"
+                        className="px-3 py-1 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer shadow-xs"
                       >
                         + Add (100g)
-                      </button>
+                      </motion.button>
                     </div>
                   ))}
                 </div>
               )}
             </>
           ) : (
-            <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-3">
+            <motion.div
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-4 rounded-2xl bg-stone-50/90 border border-stone-200 space-y-3"
+            >
               <div className="text-xs font-bold text-stone-800">Custom Ingredient Details</div>
               <div className="grid grid-cols-2 sm:grid-cols-6 gap-2 text-xs">
                 <div className="col-span-2">
-                  <label htmlFor="custom-food-name" className="text-[10px] text-stone-400 block">Name</label>
+                  <label htmlFor="custom-food-name" className="text-[10px] text-stone-400 block font-semibold">Name</label>
                   <input
                     id="custom-food-name"
                     name="customFoodName"
@@ -274,7 +289,7 @@ export const ManualEntryScreen: React.FC<ManualEntryScreenProps> = ({ onSaved })
                   />
                 </div>
                 <div>
-                  <label htmlFor="custom-food-grams" className="text-[10px] text-stone-400 block">Grams</label>
+                  <label htmlFor="custom-food-grams" className="text-[10px] text-stone-400 block font-semibold">Grams</label>
                   <input
                     id="custom-food-grams"
                     name="customFoodGrams"
@@ -285,7 +300,7 @@ export const ManualEntryScreen: React.FC<ManualEntryScreenProps> = ({ onSaved })
                   />
                 </div>
                 <div>
-                  <label htmlFor="custom-food-calories" className="text-[10px] text-stone-400 block">Calories</label>
+                  <label htmlFor="custom-food-calories" className="text-[10px] text-stone-400 block font-semibold">Calories</label>
                   <input
                     id="custom-food-calories"
                     name="customFoodCalories"
@@ -296,7 +311,7 @@ export const ManualEntryScreen: React.FC<ManualEntryScreenProps> = ({ onSaved })
                   />
                 </div>
                 <div>
-                  <label htmlFor="custom-food-protein" className="text-[10px] text-stone-400 block">Protein (g)</label>
+                  <label htmlFor="custom-food-protein" className="text-[10px] text-stone-400 block font-semibold">Protein (g)</label>
                   <input
                     id="custom-food-protein"
                     name="customFoodProtein"
@@ -307,7 +322,7 @@ export const ManualEntryScreen: React.FC<ManualEntryScreenProps> = ({ onSaved })
                   />
                 </div>
                 <div>
-                  <label htmlFor="custom-food-carbs" className="text-[10px] text-stone-400 block">Carbs (g)</label>
+                  <label htmlFor="custom-food-carbs" className="text-[10px] text-stone-400 block font-semibold">Carbs (g)</label>
                   <input
                     id="custom-food-carbs"
                     name="customFoodCarbs"
@@ -318,7 +333,7 @@ export const ManualEntryScreen: React.FC<ManualEntryScreenProps> = ({ onSaved })
                   />
                 </div>
                 <div>
-                  <label htmlFor="custom-food-fat" className="text-[10px] text-stone-400 block">Fat (g)</label>
+                  <label htmlFor="custom-food-fat" className="text-[10px] text-stone-400 block font-semibold">Fat (g)</label>
                   <input
                     id="custom-food-fat"
                     name="customFoodFat"
@@ -332,18 +347,20 @@ export const ManualEntryScreen: React.FC<ManualEntryScreenProps> = ({ onSaved })
               <div className="flex justify-end gap-2 pt-1">
                 <button
                   onClick={() => setIsCustomOpen(false)}
-                  className="px-3 py-1 text-xs text-stone-500 hover:text-stone-700 cursor-pointer"
+                  className="px-3 py-1.5 text-xs font-semibold text-stone-500 hover:text-stone-700 cursor-pointer"
                 >
                   Cancel
                 </button>
-                <button
+                <motion.button
+                  whileHover={{ scale: 1.02 }}
+                  whileTap={{ scale: 0.95 }}
                   onClick={handleAddCustom}
-                  className="px-4 py-1.5 rounded-lg text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer shadow-xs"
+                  className="px-4 py-1.5 rounded-xl text-xs font-bold bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer shadow-xs"
                 >
                   Add Ingredient
-                </button>
+                </motion.button>
               </div>
-            </div>
+            </motion.div>
           )}
         </div>
 
@@ -351,9 +368,12 @@ export const ManualEntryScreen: React.FC<ManualEntryScreenProps> = ({ onSaved })
         <div className="space-y-2.5">
           <span className="text-xs font-bold text-stone-800 block">Current Ingredients ({components.length})</span>
           {components.map((comp) => (
-            <div
+            <motion.div
               key={comp.id}
-              className="p-3.5 rounded-2xl bg-stone-50 border border-stone-200 flex items-center justify-between gap-3"
+              layout
+              initial={{ opacity: 0, y: 8 }}
+              animate={{ opacity: 1, y: 0 }}
+              className="p-3.5 rounded-2xl bg-stone-50/80 border border-stone-200/90 flex items-center justify-between gap-3 hover:border-stone-300 transition-colors"
             >
               <div>
                 <span className="text-sm font-bold text-stone-900 block">{comp.name}</span>
@@ -363,7 +383,7 @@ export const ManualEntryScreen: React.FC<ManualEntryScreenProps> = ({ onSaved })
               </div>
 
               <div className="flex items-center gap-2">
-                <div className="flex items-center gap-1 bg-white border border-stone-200 rounded-xl px-2 py-1">
+                <div className="flex items-center gap-1 bg-white border border-stone-200 rounded-xl px-2.5 py-1.5 shadow-2xs">
                   <input
                     name="ingredientGrams"
                     aria-label={`Grams for ${comp.name}`}
@@ -373,53 +393,58 @@ export const ManualEntryScreen: React.FC<ManualEntryScreenProps> = ({ onSaved })
                     className="w-14 text-right font-mono text-xs font-bold text-stone-900 focus:outline-none"
                     min="1"
                   />
-                  <span className="text-xs text-stone-400">g</span>
+                  <span className="text-xs text-stone-400 font-mono">g</span>
                 </div>
 
-                <button
+                <motion.button
+                  whileTap={{ scale: 0.85 }}
                   onClick={() => setComponents((prev) => prev.filter((c) => c.id !== comp.id))}
-                  className="p-1.5 text-stone-400 hover:text-rose-600 rounded-lg transition-colors cursor-pointer"
+                  className="p-2 text-stone-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer"
                 >
                   <Trash2 className="w-4 h-4" />
-                </button>
+                </motion.button>
               </div>
-            </div>
+            </motion.div>
           ))}
         </div>
 
         {/* Total & Action */}
-        <div className="pt-4 border-t border-stone-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="pt-5 border-t border-stone-100 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <span className="text-[11px] font-mono text-stone-400 uppercase block">Total Energy</span>
-            <span className="text-2xl font-bold font-mono text-stone-900">
+            <span className="text-[11px] font-mono text-stone-400 uppercase font-bold block">Total Energy</span>
+            <span className="text-2xl sm:text-3xl font-extrabold font-mono text-stone-900">
               {totalCalories} kcal{' '}
-              <span className="text-xs font-normal text-stone-500">
+              <span className="text-xs font-normal text-stone-500 font-mono">
                 (P: {totalProtein}g · C: {totalCarbs}g · F: {totalFat}g)
               </span>
             </span>
           </div>
 
           <div className="flex items-center gap-2.5 w-full sm:w-auto">
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => {
                 components.forEach((c) => addToStagedBasket(c));
                 onSaved();
               }}
               disabled={components.length === 0}
-              className="flex-1 sm:flex-none px-4 py-2.5 rounded-xl font-semibold text-xs bg-stone-100 hover:bg-stone-200 text-stone-700 transition-colors cursor-pointer"
+              className="flex-1 sm:flex-none px-4.5 py-3 rounded-2xl font-bold text-xs bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 transition-colors cursor-pointer"
             >
               Stage to Basket
-            </button>
-            <button
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.95 }}
               onClick={handleSave}
               disabled={components.length === 0}
-              className="flex-1 sm:flex-none px-6 py-2.5 rounded-xl font-bold text-xs bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+              className="flex-1 sm:flex-none px-6.5 py-3 rounded-2xl font-bold text-xs bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 hover:from-emerald-500 hover:to-teal-500 text-white shadow-md shadow-emerald-600/25 transition-all cursor-pointer disabled:opacity-50"
             >
               Save to Diary
-            </button>
+            </motion.button>
           </div>
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 };

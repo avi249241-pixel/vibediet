@@ -23,6 +23,7 @@ import {
   X,
   MessageSquare,
 } from 'lucide-react';
+import { motion, AnimatePresence } from 'motion/react';
 import { ComponentFoodItem, EvidenceClass, FoodItem, MealType, ClarifyingQuestion, NutritionSource } from '../types/diet';
 import { useDiet, getTodayDateString } from '../context/DietContext';
 import { preProcessImage } from '../utils/imageProcessor';
@@ -597,11 +598,18 @@ export const PhotoLogScreen: React.FC<PhotoLogScreenProps> = ({ onMealLogged }) 
   return (
     <div className="max-w-4xl mx-auto space-y-6">
       {/* Photo Capture & Upload Box */}
-      <section className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200/80 shadow-sm space-y-5">
+      <motion.section
+        initial={{ opacity: 0, y: 14 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 350, damping: 25 }}
+        className="glass-card rounded-3xl p-6 sm:p-8 space-y-5"
+      >
         <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-4">
           <div>
-            <h2 className="text-xl font-bold font-display text-stone-900 tracking-tight flex items-center gap-2">
-              <Camera className="w-5 h-5 text-emerald-600" />
+            <h2 className="text-xl font-extrabold font-display text-stone-900 tracking-tight flex items-center gap-2.5">
+              <div className="w-8 h-8 rounded-xl bg-emerald-50 text-emerald-600 flex items-center justify-center border border-emerald-100">
+                <Camera className="w-4.5 h-4.5" />
+              </div>
               Capture or Upload Meal Photo
             </h2>
             <p className="text-xs text-stone-500 mt-1">
@@ -611,32 +619,38 @@ export const PhotoLogScreen: React.FC<PhotoLogScreenProps> = ({ onMealLogged }) 
 
           <div className="flex items-center gap-2">
             {!isCameraActive ? (
-              <button
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => startCamera()}
                 disabled={isAnalyzing}
-                className="flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold bg-emerald-50 hover:bg-emerald-100 text-emerald-800 border border-emerald-200 transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+                className="flex items-center gap-2 px-3.5 py-2.5 rounded-xl text-xs font-bold bg-emerald-50/90 hover:bg-emerald-100/90 text-emerald-800 border border-emerald-200 transition-all cursor-pointer disabled:opacity-50"
               >
                 <Video className="w-4 h-4 text-emerald-600" />
                 Live Camera
-              </button>
+              </motion.button>
             ) : (
-              <button
+              <motion.button
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={stopCameraStream}
-                className="flex items-center gap-1.5 px-3 py-2 rounded-xl text-xs font-semibold bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition-all cursor-pointer"
+                className="flex items-center gap-1.5 px-3 py-2.5 rounded-xl text-xs font-bold bg-rose-50 hover:bg-rose-100 text-rose-700 border border-rose-200 transition-all cursor-pointer"
               >
                 <X className="w-4 h-4" />
                 Close Camera
-              </button>
+              </motion.button>
             )}
 
-            <button
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => fileInputRef.current?.click()}
               disabled={isAnalyzing}
-              className="flex items-center gap-2 px-4 py-2 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white shadow-sm transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+              className="flex items-center gap-2 px-4.5 py-2.5 rounded-xl text-xs font-bold bg-gradient-to-r from-emerald-600 to-teal-600 hover:from-emerald-500 hover:to-teal-500 text-white shadow-md shadow-emerald-600/20 transition-all cursor-pointer disabled:opacity-50"
             >
               <Upload className="w-4 h-4" />
               Upload Meal
-            </button>
+            </motion.button>
             <input
               id="photo-file-upload-input"
               name="photoFile"
@@ -651,46 +665,56 @@ export const PhotoLogScreen: React.FC<PhotoLogScreenProps> = ({ onMealLogged }) 
         </div>
 
         {/* Live Camera Viewfinder Overlay */}
-        {isCameraActive && (
-          <div className="relative rounded-2xl overflow-hidden bg-black border-2 border-emerald-500 shadow-md">
-            <video
-              ref={videoRef}
-              autoPlay
-              playsInline
-              muted
-              className="w-full h-64 sm:h-80 object-cover"
-            />
-            {/* Viewfinder Circular Plate Reticle */}
-            <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
-              <div className="w-48 h-48 sm:w-64 sm:h-64 rounded-full border-2 border-white/60 border-dashed animate-pulse flex items-center justify-center">
-                <span className="text-[10px] text-white/90 bg-black/60 px-2.5 py-0.5 rounded-full font-medium">
-                  Center food plate inside ring
-                </span>
+        <AnimatePresence>
+          {isCameraActive && (
+            <motion.div
+              initial={{ opacity: 0, scale: 0.98 }}
+              animate={{ opacity: 1, scale: 1 }}
+              exit={{ opacity: 0, scale: 0.98 }}
+              className="relative rounded-2xl overflow-hidden bg-black border-2 border-emerald-500/80 shadow-lg"
+            >
+              <video
+                ref={videoRef}
+                autoPlay
+                playsInline
+                muted
+                className="w-full h-64 sm:h-80 object-cover"
+              />
+              {/* Viewfinder Circular Plate Reticle */}
+              <div className="absolute inset-0 pointer-events-none flex items-center justify-center">
+                <div className="w-48 h-48 sm:w-64 sm:h-64 rounded-full border-2 border-white/60 border-dashed animate-pulse flex items-center justify-center">
+                  <span className="text-[10px] text-white/95 bg-black/60 backdrop-blur-md px-3 py-1 rounded-full font-medium">
+                    Center food plate inside ring
+                  </span>
+                </div>
               </div>
-            </div>
 
-            {/* Viewfinder Controls Bar */}
-            <div className="absolute bottom-3 inset-x-0 flex items-center justify-center gap-3 px-4">
-              <button
-                onClick={handleToggleCameraFacing}
-                className="p-2.5 rounded-full bg-black/60 backdrop-blur-md text-white hover:bg-black/80 transition-colors cursor-pointer"
-                title="Switch Camera Facing Mode"
-              >
-                <SwitchCamera className="w-4 h-4" />
-              </button>
-              <button
-                onClick={handleCaptureFromCamera}
-                className="px-5 py-2.5 rounded-full bg-emerald-600 hover:bg-emerald-500 text-white text-xs font-bold shadow-lg transition-transform active:scale-95 flex items-center gap-2 cursor-pointer"
-              >
-                <Camera className="w-4 h-4" />
-                Snap Photo & Analyze
-              </button>
-            </div>
-          </div>
-        )}
+              {/* Viewfinder Controls Bar */}
+              <div className="absolute bottom-3 inset-x-0 flex items-center justify-center gap-3 px-4">
+                <motion.button
+                  whileTap={{ scale: 0.9 }}
+                  onClick={handleToggleCameraFacing}
+                  className="p-2.5 rounded-full bg-black/60 backdrop-blur-md text-white hover:bg-black/80 transition-colors cursor-pointer"
+                  title="Switch Camera Facing Mode"
+                >
+                  <SwitchCamera className="w-4 h-4" />
+                </motion.button>
+                <motion.button
+                  whileHover={{ scale: 1.04 }}
+                  whileTap={{ scale: 0.95 }}
+                  onClick={handleCaptureFromCamera}
+                  className="px-5 py-2.5 rounded-full bg-gradient-to-r from-emerald-600 to-teal-600 text-white text-xs font-bold shadow-lg transition-transform flex items-center gap-2 cursor-pointer"
+                >
+                  <Camera className="w-4 h-4" />
+                  Snap Photo & Analyze
+                </motion.button>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {/* User Context & Re-analyze Input */}
-        <div className="bg-stone-50 rounded-2xl p-2.5 border border-stone-200/80 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
+        <div className="bg-stone-50/80 rounded-2xl p-2.5 border border-stone-200/80 flex flex-col sm:flex-row items-stretch sm:items-center gap-2">
           <div className="flex items-center gap-2 flex-1 px-1">
             <MessageSquare className="w-4 h-4 text-emerald-600 shrink-0" />
             <input
@@ -705,14 +729,16 @@ export const PhotoLogScreen: React.FC<PhotoLogScreenProps> = ({ onMealLogged }) 
             />
           </div>
           {currentBase64 && (
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.95 }}
               onClick={handleReanalyzeWithContext}
               disabled={isAnalyzing}
-              className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer active:scale-95 disabled:opacity-50 transition-all shrink-0 flex items-center justify-center gap-1.5"
+              className="px-3 py-1.5 rounded-xl text-xs font-semibold bg-emerald-600 hover:bg-emerald-700 text-white cursor-pointer disabled:opacity-50 transition-all shrink-0 flex items-center justify-center gap-1.5 shadow-xs"
             >
               <RefreshCw className={`w-3.5 h-3.5 ${isAnalyzing ? 'animate-spin' : ''}`} />
               Re-analyze
-            </button>
+            </motion.button>
           )}
         </div>
 
@@ -721,31 +747,40 @@ export const PhotoLogScreen: React.FC<PhotoLogScreenProps> = ({ onMealLogged }) 
           <span className="text-stone-400 font-medium">Or test with curated photo meals:</span>
           <div className="flex items-center gap-1.5 overflow-x-auto pb-1 scrollbar-none">
             {SAMPLE_MEAL_TEMPLATES.map((sample, idx) => (
-              <button
+              <motion.button
                 key={idx}
+                whileHover={{ scale: 1.03 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={() => loadSampleMeal(sample)}
-                className={`px-3 py-1 rounded-lg text-xs font-medium transition-colors shrink-0 cursor-pointer ${
+                className={`px-3 py-1 rounded-xl text-xs font-medium transition-colors shrink-0 cursor-pointer ${
                   mealName === sample.name
                     ? 'bg-emerald-50 text-emerald-800 border border-emerald-300 font-semibold'
-                    : 'bg-stone-50 text-stone-600 hover:bg-stone-100 border border-stone-200'
+                    : 'bg-stone-50/80 text-stone-600 hover:bg-stone-100 border border-stone-200/80'
                 }`}
               >
                 {sample.name.split(' ')[0]} {sample.name.split(' ')[1]}
-              </button>
+              </motion.button>
             ))}
           </div>
         </div>
 
         {/* Progressive Analysis Feedback */}
-        {isAnalyzing && (
-          <div className="p-4 rounded-2xl bg-emerald-50/70 border border-emerald-200 flex items-center gap-3 animate-pulse">
-            <RefreshCw className="w-5 h-5 text-emerald-600 animate-spin shrink-0" />
-            <div className="text-xs">
-              <span className="font-bold text-emerald-900 block">Analyzing Meal Photo</span>
-              <span className="text-emerald-700">{progressiveStatus}</span>
-            </div>
-          </div>
-        )}
+        <AnimatePresence>
+          {isAnalyzing && (
+            <motion.div
+              initial={{ opacity: 0, y: 6 }}
+              animate={{ opacity: 1, y: 0 }}
+              exit={{ opacity: 0, y: -6 }}
+              className="p-4 rounded-2xl bg-emerald-50/80 border border-emerald-200/90 flex items-center gap-3"
+            >
+              <RefreshCw className="w-5 h-5 text-emerald-600 animate-spin shrink-0" />
+              <div className="text-xs">
+                <span className="font-bold text-emerald-950 block">Analyzing Meal Photo</span>
+                <span className="text-emerald-700">{progressiveStatus}</span>
+              </div>
+            </motion.div>
+          )}
+        </AnimatePresence>
 
         {nonFoodNotice && (
           <div className="p-4 rounded-2xl bg-amber-50 border border-amber-300 text-xs text-amber-900 flex items-start gap-2.5 shadow-2xs">
@@ -766,11 +801,17 @@ export const PhotoLogScreen: React.FC<PhotoLogScreenProps> = ({ onMealLogged }) 
 
         {/* Phase 4: High-Confidence Food Memory Match Notification */}
         {detectedMemoryMatch && (
-          <div className="p-4 rounded-2xl bg-blue-50/80 border border-blue-200 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-sm">
+          <motion.div
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="p-4 rounded-2xl bg-gradient-to-r from-blue-50 to-indigo-50 border border-blue-200/90 flex flex-col sm:flex-row sm:items-center justify-between gap-3 shadow-xs"
+          >
             <div className="flex items-center gap-2.5">
-              <Zap className="w-5 h-5 text-blue-600 shrink-0" />
+              <div className="w-8 h-8 rounded-xl bg-blue-100 text-blue-600 flex items-center justify-center shrink-0">
+                <Zap className="w-4.5 h-4.5" />
+              </div>
               <div>
-                <div className="text-xs font-bold text-blue-900">
+                <div className="text-xs font-bold text-blue-950">
                   Past Confirmed Meal Match Detected!
                 </div>
                 <div className="text-[11px] text-blue-700">
@@ -779,31 +820,44 @@ export const PhotoLogScreen: React.FC<PhotoLogScreenProps> = ({ onMealLogged }) 
               </div>
             </div>
 
-            <button
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.95 }}
               onClick={handleOneTapMemoryLog}
-              className="px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white transition-all shadow-sm cursor-pointer whitespace-nowrap active:scale-95"
+              className="px-4 py-2 rounded-xl text-xs font-bold bg-blue-600 hover:bg-blue-700 text-white transition-all shadow-sm cursor-pointer whitespace-nowrap"
             >
               ⚡ One-Tap Re-Log ({detectedMemoryMatch.calories} kcal)
-            </button>
-          </div>
+            </motion.button>
+          </motion.div>
         )}
-      </section>
+      </motion.section>
 
       {/* Main Review & Edit Card */}
-      <section className="bg-white rounded-3xl p-6 sm:p-8 border border-stone-200/80 shadow-sm space-y-6">
+      <motion.section
+        initial={{ opacity: 0, y: 16 }}
+        animate={{ opacity: 1, y: 0 }}
+        transition={{ type: 'spring', stiffness: 350, damping: 25, delay: 0.05 }}
+        className="glass-card rounded-3xl p-6 sm:p-8 space-y-6"
+      >
         {/* Title, Meal Type, and Image Preview */}
         <div className="flex flex-col sm:flex-row gap-5 pb-6 border-b border-stone-100">
           {imagePreview && (
-            <img
-              src={imagePreview}
-              alt="Meal preview"
-              className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover border border-stone-200 shrink-0 shadow-sm"
-            />
+            <motion.div
+              whileHover={{ scale: 1.03 }}
+              transition={{ type: 'spring', stiffness: 300, damping: 20 }}
+              className="shrink-0"
+            >
+              <img
+                src={imagePreview}
+                alt="Meal preview"
+                className="w-24 h-24 sm:w-28 sm:h-28 rounded-2xl object-cover border border-white/80 shadow-md shadow-stone-900/5"
+              />
+            </motion.div>
           )}
 
           <div className="flex-1 space-y-3">
             <div>
-              <label htmlFor="photo-meal-name-input" className="text-[11px] font-mono font-semibold text-stone-400 uppercase tracking-wider block mb-1">
+              <label htmlFor="photo-meal-name-input" className="text-[11px] font-mono font-bold text-stone-400 uppercase tracking-wider block mb-1">
                 Meal Name
               </label>
               <input
@@ -813,33 +867,36 @@ export const PhotoLogScreen: React.FC<PhotoLogScreenProps> = ({ onMealLogged }) 
                 type="text"
                 value={mealName}
                 onChange={(e) => setMealName(e.target.value)}
-                className="w-full text-lg font-bold font-display text-stone-900 bg-stone-50 border border-stone-200 rounded-xl px-3.5 py-1.5 focus:outline-none focus:border-emerald-500"
+                className="w-full text-lg font-bold font-display text-stone-900 bg-stone-50/80 border border-stone-200/90 rounded-2xl px-4 py-2 focus:outline-none focus:border-emerald-500 focus:ring-2 focus:ring-emerald-500/20 transition-all"
               />
             </div>
 
             <div className="flex items-center gap-2">
               <span className="text-xs text-stone-500 font-medium">Meal Type:</span>
-              {(['Breakfast', 'Lunch', 'Dinner', 'Snack'] as MealType[]).map((t) => (
-                <button
-                  key={t}
-                  onClick={() => setMealType(t)}
-                  className={`px-3 py-1 rounded-lg text-xs font-semibold transition-all cursor-pointer ${
-                    mealType === t
-                      ? 'bg-emerald-600 text-white shadow-sm'
-                      : 'bg-stone-100 text-stone-600 hover:bg-stone-200'
-                  }`}
-                >
-                  {t}
-                </button>
-              ))}
+              <div className="flex items-center gap-1 bg-stone-100/70 p-1 rounded-xl">
+                {(['Breakfast', 'Lunch', 'Dinner', 'Snack'] as MealType[]).map((t) => (
+                  <motion.button
+                    key={t}
+                    whileTap={{ scale: 0.95 }}
+                    onClick={() => setMealType(t)}
+                    className={`px-3 py-1 rounded-lg text-xs font-bold transition-all cursor-pointer ${
+                      mealType === t
+                        ? 'bg-white text-emerald-800 shadow-xs'
+                        : 'text-stone-600 hover:text-stone-900'
+                    }`}
+                  >
+                    {t}
+                  </motion.button>
+                ))}
+              </div>
             </div>
           </div>
         </div>
 
         {/* Information-Gain Clarifying Questions (Phase 2 Requirement) */}
         {clarifyingQuestions.length > 0 && (
-          <div className="p-4 rounded-2xl bg-stone-50/80 border border-stone-200/90 space-y-3">
-            <div className="flex items-center gap-2 text-xs font-bold text-stone-800">
+          <div className="p-4.5 rounded-2xl bg-stone-50/80 border border-stone-200/90 space-y-3">
+            <div className="flex items-center gap-2 text-xs font-bold text-stone-850">
               <HelpCircle className="w-4 h-4 text-emerald-600" />
               Information-Gain Clarification (Refines Estimate)
             </div>
@@ -855,13 +912,15 @@ export const PhotoLogScreen: React.FC<PhotoLogScreenProps> = ({ onMealLogged }) 
 
                 <div className="grid grid-cols-1 sm:grid-cols-2 gap-1.5">
                   {q.options.map((opt, optIdx) => (
-                    <button
+                    <motion.button
                       key={optIdx}
+                      whileHover={{ scale: 1.01 }}
+                      whileTap={{ scale: 0.98 }}
                       onClick={() => handleSelectClarifyingOption(q.id, optIdx)}
-                      className={`text-left p-2.5 rounded-xl border text-xs transition-all cursor-pointer ${
+                      className={`text-left p-3 rounded-xl border text-xs transition-all cursor-pointer ${
                         q.selectedOptionIndex === optIdx
-                          ? 'bg-white border-emerald-500 text-emerald-900 shadow-sm font-semibold'
-                          : 'bg-white/60 border-stone-200 text-stone-600 hover:bg-white'
+                          ? 'bg-white border-emerald-500 text-emerald-950 shadow-xs font-semibold ring-1 ring-emerald-500/30'
+                          : 'bg-white/60 border-stone-200/90 text-stone-600 hover:bg-white'
                       }`}
                     >
                       <div className="flex items-center justify-between">
@@ -870,7 +929,7 @@ export const PhotoLogScreen: React.FC<PhotoLogScreenProps> = ({ onMealLogged }) 
                           <Check className="w-3.5 h-3.5 text-emerald-600 shrink-0" />
                         )}
                       </div>
-                    </button>
+                    </motion.button>
                   ))}
                 </div>
               </div>
@@ -881,12 +940,12 @@ export const PhotoLogScreen: React.FC<PhotoLogScreenProps> = ({ onMealLogged }) 
         {/* Mass Distribution & Unobservable Uncertainty Banner */}
         <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
           {/* Volumetric Mass Confidence Bounds */}
-          <div className="p-4 rounded-2xl bg-stone-50 border border-stone-200 space-y-1">
-            <span className="text-[11px] font-mono text-stone-400 uppercase font-semibold block">
+          <div className="p-4.5 rounded-2xl bg-stone-50/90 border border-stone-200 space-y-1">
+            <span className="text-[11px] font-mono text-stone-400 uppercase font-bold block">
               Mass & Energy Distribution
             </span>
             <div className="flex items-baseline gap-2">
-              <span className="text-2xl font-bold font-mono text-stone-900">
+              <span className="text-2xl font-extrabold font-mono text-stone-900">
                 {totalCalories} kcal
               </span>
               <span className="text-xs font-mono text-stone-500">
@@ -899,10 +958,10 @@ export const PhotoLogScreen: React.FC<PhotoLogScreenProps> = ({ onMealLogged }) 
           </div>
 
           {/* Unobservable Unknown Warning Indicator */}
-          <div className={`p-4 rounded-2xl border space-y-1 ${
-            hasUnobservableUnknown ? 'bg-rose-50/70 border-rose-200 text-rose-900' : 'bg-emerald-50/60 border-emerald-200 text-emerald-900'
+          <div className={`p-4.5 rounded-2xl border space-y-1 ${
+            hasUnobservableUnknown ? 'bg-rose-50/80 border-rose-200 text-rose-900' : 'bg-emerald-50/70 border-emerald-200 text-emerald-900'
           }`}>
-            <span className="text-[11px] font-mono uppercase font-semibold flex items-center gap-1.5">
+            <span className="text-[11px] font-mono uppercase font-bold flex items-center gap-1.5">
               {hasUnobservableUnknown ? (
                 <>
                   <EyeOff className="w-3.5 h-3.5 text-rose-600" />
@@ -925,23 +984,29 @@ export const PhotoLogScreen: React.FC<PhotoLogScreenProps> = ({ onMealLogged }) 
 
         {/* Thermodynamic Atwater Validation Alert (if Discrepancy > 10%) */}
         {isMealEnergyUnreliable && (
-          <div className="p-4 rounded-2xl bg-amber-50/90 border border-amber-300 text-xs space-y-2 animate-fade-in shadow-xs">
+          <motion.div
+            initial={{ opacity: 0, scale: 0.98 }}
+            animate={{ opacity: 1, scale: 1 }}
+            className="p-4.5 rounded-2xl bg-gradient-to-r from-amber-50 to-orange-50 border border-amber-300 text-xs space-y-2 shadow-xs"
+          >
             <div className="flex flex-col sm:flex-row sm:items-center justify-between gap-2 font-bold text-amber-950">
               <span className="flex items-center gap-1.5">
                 <AlertTriangle className="w-4 h-4 text-amber-600 shrink-0" />
                 Thermodynamic Energy Warning: {mealAtwaterValidation.discrepancyPercentage}% Discrepancy
               </span>
-              <button
+              <motion.button
+                whileHover={{ scale: 1.02 }}
+                whileTap={{ scale: 0.95 }}
                 onClick={handleCalibrateAllComponentsAtwater}
-                className="px-3 py-1.5 rounded-xl text-[11px] font-bold bg-amber-600 hover:bg-amber-700 text-white cursor-pointer shadow-2xs transition-all self-start sm:self-auto"
+                className="px-3.5 py-1.5 rounded-xl text-[11px] font-bold bg-amber-600 hover:bg-amber-700 text-white cursor-pointer shadow-xs transition-all self-start sm:self-auto"
               >
                 ⚡ Auto-Calibrate All to Atwater ({mealAtwaterValidation.atwaterCalories} kcal)
-              </button>
+              </motion.button>
             </div>
             <p className="text-[11px] text-amber-800 leading-relaxed">
               Reported energy ({totalCalories} kcal) differs by {mealAtwaterValidation.discrepancyPercentage}% from macronutrient fuel factors 4*Protein + 4*Carbs + 9*Fat ({mealAtwaterValidation.atwaterCalories} kcal). This exceeds the 10% tolerance threshold and is flagged as unreliable.
             </p>
-          </div>
+          </motion.div>
         )}
 
         {/* Per-Component Editable Table */}
@@ -955,16 +1020,19 @@ export const PhotoLogScreen: React.FC<PhotoLogScreenProps> = ({ onMealLogged }) 
             </span>
           </div>
 
-          <div className="space-y-2">
+          <div className="space-y-2.5">
             {components.map((comp) => {
               const ev = EVIDENCE_LABELS[comp.evidenceClass] || EVIDENCE_LABELS.visible;
               const atwaterVal = comp.atwaterValidation || validateAtwaterThermodynamics(comp.calories, comp.protein, comp.carbs, comp.fat);
               const isUnreliable = comp.isUnreliable || atwaterVal.isUnreliable;
 
               return (
-                <div
+                <motion.div
                   key={comp.id}
-                  className={`p-3.5 rounded-2xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors ${
+                  layout
+                  initial={{ opacity: 0, y: 8 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  className={`p-4 rounded-2xl border flex flex-col sm:flex-row sm:items-center justify-between gap-3 transition-colors ${
                     isUnreliable
                       ? 'bg-amber-50/40 border-amber-300 hover:border-amber-400'
                       : 'bg-stone-50/80 border-stone-200/90 hover:border-stone-300'
@@ -977,7 +1045,7 @@ export const PhotoLogScreen: React.FC<PhotoLogScreenProps> = ({ onMealLogged }) 
                       </span>
                       <button
                         onClick={() => handleToggleEvidence(comp.id)}
-                        className={`text-[10px] px-2.5 py-0.5 rounded-full border cursor-pointer ${ev.badgeClass}`}
+                        className={`text-[10px] px-2.5 py-0.5 rounded-full border cursor-pointer font-medium ${ev.badgeClass}`}
                         title="Click to toggle evidence class"
                       >
                         {ev.label}
@@ -988,7 +1056,7 @@ export const PhotoLogScreen: React.FC<PhotoLogScreenProps> = ({ onMealLogged }) 
                     </div>
 
                     <div className="flex items-center gap-2 text-xs text-stone-500 mt-1 font-mono flex-wrap">
-                      <span className={`font-bold ${isUnreliable ? 'text-amber-900' : 'text-stone-800'}`}>
+                      <span className={`font-bold ${isUnreliable ? 'text-amber-900' : 'text-stone-850'}`}>
                         {comp.calories} kcal
                       </span>
                       {isUnreliable && (
@@ -997,12 +1065,12 @@ export const PhotoLogScreen: React.FC<PhotoLogScreenProps> = ({ onMealLogged }) 
                           Unreliable ({atwaterVal.discrepancyPercentage}%)
                         </span>
                       )}
-                      <span aria-hidden="true">·</span>
-                      <span className="text-blue-600">{comp.protein}g P</span>
-                      <span aria-hidden="true">·</span>
-                      <span className="text-amber-600">{comp.carbs}g C</span>
-                      <span aria-hidden="true">·</span>
-                      <span className="text-rose-600">{comp.fat}g F</span>
+                      <span aria-hidden="true" className="text-stone-300">·</span>
+                      <span className="text-blue-600 font-semibold">{comp.protein}g P</span>
+                      <span aria-hidden="true" className="text-stone-300">·</span>
+                      <span className="text-amber-600 font-semibold">{comp.carbs}g C</span>
+                      <span aria-hidden="true" className="text-stone-300">·</span>
+                      <span className="text-rose-600 font-semibold">{comp.fat}g F</span>
                     </div>
 
                     {isUnreliable && (
@@ -1013,13 +1081,15 @@ export const PhotoLogScreen: React.FC<PhotoLogScreenProps> = ({ onMealLogged }) 
                             Atwater 4P+4C+9F: <strong>{atwaterVal.atwaterCalories} kcal</strong> ({atwaterVal.discrepancyPercentage}% discrepancy)
                           </span>
                         </div>
-                        <button
+                        <motion.button
+                          whileHover={{ scale: 1.02 }}
+                          whileTap={{ scale: 0.95 }}
                           onClick={() => handleCalibrateComponentAtwater(comp.id)}
-                          className="shrink-0 text-[10px] font-bold text-emerald-900 bg-emerald-100 hover:bg-emerald-200 border border-emerald-300 px-2 py-0.5 rounded-lg transition-colors cursor-pointer"
+                          className="shrink-0 text-[10px] font-bold text-emerald-900 bg-emerald-100 hover:bg-emerald-200 border border-emerald-300 px-2.5 py-0.5 rounded-lg transition-colors cursor-pointer"
                           title="Calibrate energy to Atwater formula"
                         >
                           ⚡ Calibrate to {atwaterVal.atwaterCalories} kcal
-                        </button>
+                        </motion.button>
                       </div>
                     )}
 
@@ -1030,36 +1100,40 @@ export const PhotoLogScreen: React.FC<PhotoLogScreenProps> = ({ onMealLogged }) 
                           Visual ref: {comp.referencePortionBenchmark}
                         </span>
                       )}
-                      <button
+                      <motion.button
+                        whileTap={{ scale: 0.9 }}
                         onClick={() => handleUpdateGrams(comp.id, Math.max(5, comp.grams - 25))}
-                        className="text-[10px] px-2 py-0.5 rounded-md bg-white border border-stone-200 text-stone-600 hover:bg-stone-100 cursor-pointer"
+                        className="text-[10px] px-2 py-0.5 rounded-md bg-white border border-stone-200 text-stone-600 hover:bg-stone-100 cursor-pointer font-medium"
                       >
                         -25g
-                      </button>
-                      <button
+                      </motion.button>
+                      <motion.button
+                        whileTap={{ scale: 0.9 }}
                         onClick={() => handleUpdateGrams(comp.id, comp.grams + 10)}
-                        className="text-[10px] px-2 py-0.5 rounded-md bg-white border border-stone-200 text-stone-600 hover:bg-stone-100 cursor-pointer"
+                        className="text-[10px] px-2 py-0.5 rounded-md bg-white border border-stone-200 text-stone-600 hover:bg-stone-100 cursor-pointer font-medium"
                       >
                         +10g
-                      </button>
-                      <button
+                      </motion.button>
+                      <motion.button
+                        whileTap={{ scale: 0.9 }}
                         onClick={() => handleUpdateGrams(comp.id, comp.grams + 25)}
-                        className="text-[10px] px-2 py-0.5 rounded-md bg-white border border-stone-200 text-stone-600 hover:bg-stone-100 cursor-pointer"
+                        className="text-[10px] px-2 py-0.5 rounded-md bg-white border border-stone-200 text-stone-600 hover:bg-stone-100 cursor-pointer font-medium"
                       >
                         +25g
-                      </button>
-                      <button
+                      </motion.button>
+                      <motion.button
+                        whileTap={{ scale: 0.9 }}
                         onClick={() => handleUpdateGrams(comp.id, Math.round(comp.grams * 1.5))}
-                        className="text-[10px] px-2 py-0.5 rounded-md bg-white border border-stone-200 text-stone-600 hover:bg-stone-100 cursor-pointer"
+                        className="text-[10px] px-2 py-0.5 rounded-md bg-white border border-stone-200 text-stone-600 hover:bg-stone-100 cursor-pointer font-medium"
                       >
                         x1.5
-                      </button>
+                      </motion.button>
                     </div>
                   </div>
 
                   <div className="flex items-center gap-3">
                     {/* Portion Slider / Grams input */}
-                    <div className="flex items-center gap-1.5 bg-white border border-stone-200 rounded-xl px-2.5 py-1 shadow-2xs">
+                    <div className="flex items-center gap-1.5 bg-white border border-stone-200 rounded-xl px-2.5 py-1.5 shadow-2xs">
                       <input
                         name="componentGrams"
                         aria-label={`Grams for ${comp.name}`}
@@ -1070,18 +1144,19 @@ export const PhotoLogScreen: React.FC<PhotoLogScreenProps> = ({ onMealLogged }) 
                         min="1"
                         max="999"
                       />
-                      <span className="text-xs text-stone-400">g</span>
+                      <span className="text-xs text-stone-400 font-mono">g</span>
                     </div>
 
-                    <button
+                    <motion.button
+                      whileTap={{ scale: 0.85 }}
                       onClick={() => setComponents((prev) => prev.filter((c) => c.id !== comp.id))}
-                      className="p-1.5 text-stone-400 hover:text-rose-600 hover:bg-rose-50 rounded-lg transition-colors cursor-pointer"
+                      className="p-2 text-stone-400 hover:text-rose-600 hover:bg-rose-50 rounded-xl transition-colors cursor-pointer"
                       title="Remove component"
                     >
                       <Trash2 className="w-4 h-4" />
-                    </button>
+                    </motion.button>
                   </div>
-                </div>
+                </motion.div>
               );
             })}
           </div>
@@ -1272,7 +1347,11 @@ export const PhotoLogScreen: React.FC<PhotoLogScreenProps> = ({ onMealLogged }) 
 
         {/* Toast confirmation for basket */}
         {basketToast && (
-          <div className="p-3 rounded-xl bg-amber-50 border border-amber-300 text-xs text-amber-900 flex items-center justify-between shadow-xs">
+          <motion.div
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            className="p-3.5 rounded-xl bg-amber-50 border border-amber-300 text-xs text-amber-900 flex items-center justify-between shadow-xs"
+          >
             <div className="flex items-center gap-2">
               <CheckCircle2 className="w-4 h-4 text-amber-600" />
               <span>{basketToast}</span>
@@ -1280,13 +1359,13 @@ export const PhotoLogScreen: React.FC<PhotoLogScreenProps> = ({ onMealLogged }) 
             <button onClick={() => setBasketToast(null)} className="text-amber-700 hover:text-amber-900 cursor-pointer">
               <X className="w-4 h-4" />
             </button>
-          </div>
+          </motion.div>
         )}
 
         {/* Bottom Confirm Action */}
-        <div className="pt-4 border-t border-stone-100 flex flex-col sm:flex-row items-center justify-between gap-4">
+        <div className="pt-5 border-t border-stone-100 flex flex-col sm:flex-row items-center justify-between gap-4">
           <div>
-            <div className="text-[11px] font-mono text-stone-400 uppercase flex items-center gap-1.5">
+            <div className="text-[11px] font-mono text-stone-400 uppercase font-bold flex items-center gap-1.5">
               <span>Confirmed Meal Total</span>
               {isMealEnergyUnreliable && (
                 <span className="text-[10px] px-2 py-0.5 rounded-full bg-amber-100 text-amber-900 border border-amber-300 flex items-center gap-1 font-sans font-semibold">
@@ -1295,36 +1374,40 @@ export const PhotoLogScreen: React.FC<PhotoLogScreenProps> = ({ onMealLogged }) 
                 </span>
               )}
             </div>
-            <div className="text-2xl font-bold font-mono text-stone-900">
+            <div className="text-2xl sm:text-3xl font-extrabold font-mono text-stone-900">
               {totalCalories} kcal{' '}
-              <span className="text-xs font-normal text-stone-500">
+              <span className="text-xs font-normal text-stone-500 font-mono">
                 (P: {totalProtein}g · C: {totalCarbs}g · F: {totalFat}g)
               </span>
             </div>
           </div>
 
           <div className="flex items-center gap-2.5 w-full sm:w-auto">
-            <button
+            <motion.button
+              whileHover={{ scale: 1.02 }}
+              whileTap={{ scale: 0.95 }}
               onClick={() => {
                 components.forEach((c) => addToStagedBasket(c));
                 setBasketToast(`Added ${components.length} components to Food Plate Staging Basket! View basket in omnibar below.`);
                 setTimeout(() => setBasketToast(null), 4000);
               }}
               disabled={components.length === 0}
-              className="flex-1 sm:flex-initial px-4 py-3 rounded-2xl font-bold text-xs bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+              className="flex-1 sm:flex-initial px-4.5 py-3 rounded-2xl font-bold text-xs bg-amber-50 hover:bg-amber-100 text-amber-900 border border-amber-200 transition-all cursor-pointer disabled:opacity-50"
             >
               🧺 Stage on Plate Basket
-            </button>
-            <button
+            </motion.button>
+            <motion.button
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.95 }}
               onClick={handleConfirmMeal}
               disabled={components.length === 0}
-              className="flex-1 sm:flex-initial px-6 py-3 rounded-2xl font-bold text-xs bg-emerald-600 hover:bg-emerald-700 text-white shadow-md shadow-emerald-900/10 transition-all cursor-pointer active:scale-95 disabled:opacity-50"
+              className="flex-1 sm:flex-initial px-6.5 py-3 rounded-2xl font-bold text-xs bg-gradient-to-r from-emerald-600 via-teal-600 to-emerald-500 hover:from-emerald-500 hover:to-teal-500 text-white shadow-md shadow-emerald-600/25 transition-all cursor-pointer disabled:opacity-50"
             >
               Confirm & Log to Diary →
-            </button>
+            </motion.button>
           </div>
         </div>
-      </section>
+      </motion.section>
     </div>
   );
 };

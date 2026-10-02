@@ -6,11 +6,71 @@
   --font-mono: 'JetBrains Mono', ui-monospace, monospace;
 }
 
+:root {
+  --bg-surface: #fbfcfd;
+  --bg-card: rgba(255, 255, 255, 0.88);
+  --border-card: rgba(235, 238, 242, 0.9);
+  --shadow-ambient: 0 12px 36px -8px rgba(15, 23, 42, 0.05), 0 2px 6px -1px rgba(15, 23, 42, 0.02);
+  --shadow-hover: 0 20px 48px -10px rgba(15, 23, 42, 0.08), 0 4px 10px -2px rgba(15, 23, 42, 0.03);
+}
+
 body {
   font-family: var(--font-sans);
-  background-color: #f8f9fa; /* calm warm off-white */
-  color: #292524; /* stone-800 */
+  background-color: var(--bg-surface);
+  background-image: 
+    radial-gradient(at 0% 0%, rgba(16, 185, 129, 0.06) 0px, transparent 45%),
+    radial-gradient(at 100% 0%, rgba(99, 102, 241, 0.05) 0px, transparent 40%),
+    radial-gradient(at 50% 100%, rgba(245, 158, 11, 0.04) 0px, transparent 45%);
+  background-attachment: fixed;
+  color: #1c1917; /* stone-900 */
   overflow-x: hidden;
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Glassmorphic luxury cards */
+.glass-card {
+  background: var(--bg-card);
+  backdrop-filter: blur(16px);
+  -webkit-backdrop-filter: blur(16px);
+  border: 1px solid var(--border-card);
+  box-shadow: var(--shadow-ambient);
+  transition: all 0.28s cubic-bezier(0.16, 1, 0.3, 1);
+}
+
+.glass-card:hover {
+  box-shadow: var(--shadow-hover);
+  border-color: rgba(210, 215, 222, 0.9);
+}
+
+.glass-dock {
+  background: rgba(255, 255, 255, 0.85);
+  backdrop-filter: blur(24px);
+  -webkit-backdrop-filter: blur(24px);
+  border: 1px solid rgba(255, 255, 255, 0.9);
+  box-shadow: 0 20px 50px -10px rgba(15, 23, 42, 0.12), 0 0 1px 1px rgba(255, 255, 255, 0.8) inset;
+}
+
+.glass-pill {
+  background: rgba(244, 246, 248, 0.8);
+  backdrop-filter: blur(8px);
+  border: 1px solid rgba(226, 232, 240, 0.8);
+}
+
+/* Macro Gradient Badges & Bars */
+.gradient-calorie {
+  background: linear-gradient(135deg, #10b981 0%, #14b8a6 100%);
+}
+
+.gradient-protein {
+  background: linear-gradient(135deg, #6366f1 0%, #8b5cf6 100%);
+}
+
+.gradient-carbs {
+  background: linear-gradient(135deg, #f59e0b 0%, #f97316 100%);
+}
+
+.gradient-fat {
+  background: linear-gradient(135deg, #f43f5e 0%, #fb7185 100%);
 }
 
 /* Custom quiet scrollbar */
@@ -19,7 +79,7 @@ body {
   height: 6px;
 }
 ::-webkit-scrollbar-track {
-  background: #f1f2f4;
+  background: transparent;
 }
 ::-webkit-scrollbar-thumb {
   background: #d6d8db;
@@ -29,3 +89,11 @@ body {
   background: #b0b4b8;
 }
 
+@keyframes pulse-subtle {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.85; transform: scale(1.02); }
+}
+
+.animate-pulse-subtle {
+  animation: pulse-subtle 3s cubic-bezier(0.4, 0, 0.6, 1) infinite;
+}
